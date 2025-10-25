@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debt Snowball Calculator & Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>💰 Debt Snowball Calculator</h1>
+      <p class="subtitle">Accurate Vertex42-calibrated method w/ promo tracking</p>
+    </header>
+
+    <div class="card">
+      <h2>Monthly Budget</h2>
+      <div class="form-group">
+        <label for="monthlyBudget">Total Monthly Payment Available</label>
+        <input type="number" id="monthlyBudget" value="701" step="0.01">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Your Debts</h2>
+      <div class="debt-list" id="debtList"></div>
+      <button class="btn btn-secondary" id="addDebt">+ Add Debt</button>
+    </div>
+
+    <div class="card">
+      <button class="btn btn-primary" id="calculateBtn">Calculate Snowball Plan</button>
+    </div>
+
+    <div id="results" class="hidden">
+      <div class="card">
+        <h2>📊 Summary</h2>
+        <div class="stats-grid">
+          <div class="stat-card"><div>Total Debt</div><div id="totalDebt">$0</div></div>
+          <div class="stat-card"><div>Payoff Time</div><div id="payoffTime">0 months</div></div>
+          <div class="stat-card"><div>Total Interest</div><div id="totalInterest">$0</div></div>
+          <div class="stat-card"><div>Total Paid</div><div id="totalPaid">$0</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📅 Month-by-Month Schedule</h2>
+        <table id="scheduleTable"></table>
+      </div>
+
+      <div class="card">
+        <h2>📈 Chart</h2>
+        <canvas id="chart"></canvas>
+      </div>
+    </div>
+  </div>
+<script src="script.js"></script>
+</body>
+</html>
