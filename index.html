@@ -3,48 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>💰 Debt Snowball Calculator v4.1</title>
+  <title>💰 Debt Snowball Calculator v4.2.0</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>💰 Debt Snowball Calculator v4.1</h1>
-      <p class="subtitle">Vertex42‑Accurate • 0 % Promo Protected • Results Visible</p>
+      <h1>💰 Debt Snowball Calculator v4.2.0</h1>
+      <p class="subtitle">Vertex42‑Accurate • Promo & Minimum Priority • Math Explained Monthly</p>
     </header>
 
     <div class="card">
-      <h2>Monthly Budget</h2>
+      <h2>Monthly Budget</h2>
       <div class="form-group">
-        <label>Total Monthly Payment Available</label>
+        <label>Total Monthly Payment Available</label>
         <input type="number" id="monthlyBudget" value="701" step="0.01" />
       </div>
     </div>
 
     <div class="card">
-      <h2>Your Debts</h2>
+      <h2>Your Debts</h2>
       <div id="debtList"></div>
-      <button class="btn btn-secondary" id="addDebt">+ Add Debt</button>
+      <button class="btn btn-secondary" id="addDebt">+ Add Debt</button>
     </div>
 
     <div class="card">
-      <button class="btn btn-primary" id="calculateBtn">Calculate Snowball Plan</button>
+      <button class="btn btn-primary" id="calculateBtn">Calculate Snowball Plan</button>
     </div>
 
     <div id="results" class="hidden">
       <div class="card">
-        <h2>📊 Summary</h2>
+        <h2>📊 Summary</h2>
         <div class="stats-grid">
-          <div class="stat-card"><div>Total Debt</div><div id="totalDebt">$0</div></div>
-          <div class="stat-card"><div>Payoff Time</div><div id="payoffTime">0 months</div></div>
-          <div class="stat-card"><div>Total Interest</div><div id="totalInterest">$0</div></div>
-          <div class="stat-card"><div>Total Paid</div><div id="totalPaid">$0</div></div>
+          <div class="stat-card"><div>Total Debt</div><div id="totalDebt">$0</div></div>
+          <div class="stat-card"><div>Payoff Time</div><div id="payoffTime">0 months</div></div>
+          <div class="stat-card"><div>Total Interest</div><div id="totalInterest">$0</div></div>
+          <div class="stat-card"><div>Total Paid</div><div id="totalPaid">$0</div></div>
         </div>
       </div>
 
       <div class="card">
-        <h2>📅 Month‑by‑Month Schedule</h2>
+        <h2>📅 Month-by-Month Schedule</h2>
         <table id="scheduleTable"></table>
+      </div>
+
+      <div class="card">
+        <h2>🧮 Math Details</h2>
+        <pre id="mathDetails" style="font-family:monospace;white-space:pre-wrap;"></pre>
       </div>
     </div>
   </div>
