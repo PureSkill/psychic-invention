@@ -31,8 +31,11 @@ header h1 {
   align-items: center;
   flex-wrap: wrap;
 }
-label { min-width: 180px; color: #333; }
-input[type="number"], select, input[type="text"] {
+label {
+  min-width: 180px;
+  color: #333;
+}
+input[type=number], input[type=text] {
   padding: 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
@@ -54,18 +57,61 @@ input[type="number"], select, input[type="text"] {
   background: #e9ecef;
   border: none;
 }
-.muted { color: #666; font-size: 13px; }
-#debtList > div { margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px dashed #eee; }
-.debt-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.debt-row strong { min-width: 120px; }
-.debt-row input { width: 120px; padding: 6px; }
-.table-wrap { overflow-x: auto; margin-top: 8px; }
-table { border-collapse: collapse; width: 100%; font-size: 13px; }
-th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: right; white-space: nowrap; }
-th { background: #f3f3f3; text-align: center; position: sticky; top: 0; z-index: 2; }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 10px; }
-.stat-card { background: #fafafa; padding: 10px; border-radius: 6px; text-align: center; }
-.hidden { display: none; }
-pre { max-height: 360px; overflow: auto; background: #0f1720; color: #e6ffed; padding: 12px; border-radius: 6px; }
-footer { margin-top: 18px; color: #888; font-size: 13px; }
-.remove-btn { background: #ff6b6b; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+#debtList {
+  margin-top: 10px;
+}
+.debt-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  border-bottom: 1px dashed #eee;
+  padding-bottom: 6px;
+}
+.debt-row input {
+  width: 150px;
+  padding: 6px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+.debt-row strong {
+  min-width: 100px;
+}
+.remove-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  text-align: right;
+  white-space: nowrap;
+}
+th {
+  background: #f3f3f3;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+tfoot th {
+  text-align: right;
+}
+.muted {
+  color: #666;
+  font-size: 13px;
+}

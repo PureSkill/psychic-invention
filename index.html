@@ -3,91 +3,65 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>God Mode Debt Snowball — Jake</title>
+<title>God Mode Debt Calculator 2.0</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <div class="container">
-  <header>
-    <h1>God Mode Debt Snowball</h1>
-    <p class="subtitle">Jake — Personalized, GitHub Pages compatible • Min-first + 0% APR priority</p>
-  </header>
+<header>
+  <h1>God Mode Debt Calculator 2.0</h1>
+  <p class="subtitle">Manual entry + CSV upload, monthly payoff schedule, offline</p>
+</header>
 
-  <div class="card">
-    <h2>Settings</h2>
-    <div class="form-row">
-      <label for="monthlyBudget">Total Monthly Payment Available</label>
-      <input type="number" id="monthlyBudget" value="701" step="0.01" />
-    </div>
-
-    <div class="form-row">
-      <label for="strategy">Snowball Strategy</label>
-      <select id="strategy">
-        <option value="balance">Standard Snowball (smallest balance first)</option>
-        <option value="zero-first">0% APR First (lowest min first) → then snowball</option>
-      </select>
-    </div>
-
-    <div class="form-row">
-      <button class="btn btn-primary" id="saveBtn">Save To Local</button>
-      <button class="btn" id="loadBtn">Load Saved</button>
-      <button class="btn btn-secondary" id="resetBtn">Reset Defaults</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Your Debts</h2>
-    <p class="muted">Edit balances, APRs, and minimums. Add or remove debts as needed.</p>
-    <div id="debtList"></div>
-    <div class="form-row">
-      <button class="btn btn-secondary" id="addDebt">Add Debt</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <button class="btn btn-primary" id="calculateBtn">Calculate Snowball Plan</button>
-    <button class="btn" id="downloadCsv">Download Schedule CSV</button>
-  </div>
-
-  <div id="results" class="hidden">
-    <div class="card">
-      <h2>Summary</h2>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div>Total Remaining Debt</div>
-          <div id="totalDebt">0.00</div>
-        </div>
-        <div class="stat-card">
-          <div>Payoff Time</div>
-          <div id="payoffTime">0 months</div>
-        </div>
-        <div class="stat-card">
-          <div>Total Interest</div>
-          <div id="totalInterest">0.00</div>
-        </div>
-        <div class="stat-card">
-          <div>Total Paid</div>
-          <div id="totalPaid">0.00</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Amortization Schedule</h2>
-      <div class="table-wrap">
-        <table id="scheduleTable"></table>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Math Details</h2>
-      <pre id="mathDetails"></pre>
-    </div>
-  </div>
-
-  <footer class="muted">Static — works on GitHub Pages — Made for Jake</footer>
+<div class="card">
+  <h2>Add Debts</h2>
+  <p>Enter your debts below or upload a CSV file to populate.</p>
+  <input type="file" id="csvFileInput" accept=".csv" />
+  <button class="btn btn-secondary" id="clearDebtsBtn">Clear All Debts</button>
+  <div id="debtList"></div>
+  <button class="btn btn-secondary" id="addDebtBtn">Add Debt</button>
 </div>
 
+<div class="card">
+  <h2>Settings</h2>
+  <label for="monthlyBudget">Monthly Budget (Total Payment):</label>
+  <input type="number" id="monthlyBudget" value="700" step="0.01" min="0" />
+</div>
+
+<div class="card">
+  <button class="btn btn-primary" id="calculateBtn">Calculate Payoff Schedule</button>
+  <button class="btn" id="downloadCsvBtn" disabled>Download Schedule CSV</button>
+</div>
+
+<div class="card" id="scheduleContainer" style="display:none;">
+  <h2>Payoff Schedule</h2>
+  <div class="table-wrap">
+    <table id="scheduleTable">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Payment per Debt</th>
+          <th>Interest Paid</th>
+          <th>Principal Paid</th>
+          <th>Remaining Balance</th>
+          <th>Total Monthly Cost</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <th colspan="5" style="text-align:right;">Total Paid:</th>
+          <th id="totalPaidFooter">0</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<footer>
+  <p class="muted">Static, GitHub Pages ready, offline capable.</p>
+</footer>
+</div>
 <script src="script.js"></script>
 </body>
 </html>
