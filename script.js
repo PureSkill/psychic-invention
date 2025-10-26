@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // DOM bindings
   const calculateBtn = document.getElementById('calculateBtn');
   const debtList = document.getElementById('debtList');
   const results = document.getElementById('results');
@@ -27,46 +26,49 @@ document.addEventListener('DOMContentLoaded', () => {
     { prefix:"Promo", name:"HOTELS 3", balance:367.62, apr:0, min:24.51 }
   ];
 
-  // Function to render debts in debtList div
+  // Render debts with editable inputs
   function renderDebts() {
     debtList.innerHTML = debts.map((d, i) => `
       <div>
         <strong>${d.prefix} - ${d.name}</strong><br/>
-        Balance: <input type="number" step="0.01" class="balance" data-index="${i}" value="${d.balance}" /> &nbsp;&nbsp;
-        APR: <input type="number" step="0.01" class="apr" data-index="${i}" value="${d.apr}" /> &nbsp;&nbsp;
+        Balance: <input type="number" step="0.01" class="balance" data-index="${i}" value="${d.balance}" /> &nbsp;
+        APR: <input type="number" step="0.01" class="apr" data-index="${i}" value="${d.apr}" /> &nbsp;
         Min: <input type="number" step="0.01" class="minPay" data-index="${i}" value="${d.min}" />
       </div>
+      <br/>
     `).join('');
     addInputListeners();
   }
 
-  // Update debt objects when inputs change
+  // Bind input fields to update data
   function addInputListeners() {
-    const balances = document.querySelectorAll('.balance');
-    const aprs = document.querySelectorAll('.apr');
-    const mins = document.querySelectorAll('.minPay');
-
-    balances.forEach(input => input.addEventListener('input', e => {
-      const idx = +e.target.dataset.index;
-      debts[idx].balance = parseFloat(e.target.value) || 0;
-    }));
-    aprs.forEach(input => input.addEventListener('input', e => {
-      const idx = +e.target.dataset.index;
-      debts[idx].apr = parseFloat(e.target.value) || 0;
-    }));
-    mins.forEach(input => input.addEventListener('input', e => {
-      const idx = +e.target.dataset.index;
-      debts[idx].min = parseFloat(e.target.value) || 0;
-    }));
+    document.querySelectorAll('.balance').forEach(input => {
+      input.addEventListener('input', e => {
+        const idx = +e.target.dataset.index;
+        debts[idx].balance = parseFloat(e.target.value) || 0;
+      });
+    });
+    document.querySelectorAll('.apr').forEach(input => {
+      input.addEventListener('input', e => {
+        const idx = +e.target.dataset.index;
+        debts[idx].apr = parseFloat(e.target.value) || 0;
+      });
+    });
+    document.querySelectorAll('.minPay').forEach(input => {
+      input.addEventListener('input', e => {
+        const idx = +e.target.dataset.index;
+        debts[idx].min = parseFloat(e.target.value) || 0;
+      });
+    });
   }
-  
-  // Add new debt (empty)
+
+  // Add new empty debt
   addDebtBtn.onclick = () => {
     debts.push({ prefix: "New", name: "Debt", balance: 0, apr: 0, min: 0 });
     renderDebts();
-  }
+  };
 
-  // Calculation function (placeholder, replace with full debt snowball logic)
+  // Debt snowball calculation
   calculateBtn.onclick = () => {
     const monthlyBudget = parseFloat(monthlyBudgetInput.value);
     if (isNaN(monthlyBudget) || monthlyBudget <= 0) {
@@ -74,19 +76,106 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Example calculation - total debt sum and minimal payments sum
-    const totalDebt = debts.reduce((sum, d) => sum + d.balance, 0);
-    const totalMinPayment = debts.reduce((sum, d) => sum + d.min, 0);
+    // Clone and sort debts by balance ascending (standard snowball)
+    let sorted = debts.filter(d => d.balance > 0)
+      .map(d => ({ ...d }))
+      .sort((a, b) => a.balance - b.balance);
 
-    // For demo, just show sums in results
-    totalDebtEl.textContent = totalDebt.toFixed(2);
-    totalInterestEl.textContent = "Calculated in full version...";
-    totalPaidEl.textContent = "Calculated in full version...";
-    payoffTimeEl.textContent = "Calculated in full version...";
+    if (sorted.length === 0) {
+      alert("Add some debts with balances to calculate.");
+      return;
+    }
 
-    results.classList.remove('hidden');
+    let month = 0;
+    let totalInterest = 0;
+    let totalPaid = 0;
+    const schedule = [];
+    const mathLog = [];
+    let maxMonths = 600; // 50 years limit
+
+    while (sorted.some(d => d.balance > 0) && month < maxMonths) {
+      month++;
+      let extra = monthlyBudget; // amount still available to pay this month
+      mathLog.push(`Month ${month} calculation start with $${extra.toFixed(2)} budget`);
+
+      // Reserve minimum payments first, subtract from extra
+      for (const debt of sorted) {
+        if (debt.balance <= 0) continue;
+        extra -= debt.min;
+        mathLog.push(`Reserve min $${debt.min.toFixed(2)} for ${debt.name}, budget left $${extra.toFixed(2)}`);
+      }
+      
+      // Apply payments, snowball on lowest balance non-promo debt
+      let targetIndex = sorted.findIndex(d => d.apr !== 0 && d.balance > 0);
+      let target = (targetIndex !== -1) ? sorted[targetIndex] : null;
+
+      // Calculate new month balances
+      const monthBalances = [];
+
+      for (let i = 0; i < sorted.length; i++) {
+        let debt = sorted[i];
+        if (debt.balance <= 0) {
+          monthBalances.push(0);
+          continue;
+        }
+
+        // Interest = balance * APR / 1200 (monthly rate)
+        const interest = debt.balance * (debt.apr / 1200);
+        totalInterest += interest;
+
+        // Balance after interest added
+        let due = debt.balance + interest;
+
+        // Initial payment is minimum payment
+        let payment = debt.min;
+
+        // If this is the target debt (lowest balance non-promo), add snowball extra payment
+        if (target && target === debt && extra > 0) {
+          // Payment over min is limited by what settles debt: due - payment
+          const snowball = Math.min(extra, due - payment);
+          payment += snowball;
+          extra -= snowball;
+          mathLog.push(`Snowball payment $${snowball.toFixed(2)} to ${debt.name}`);
+        }
+
+        payment = Math.min(payment, due); // payment can't exceed due
+
+        let newBalance = due - payment;
+        totalPaid += payment;
+
+        mathLog.push(`${debt.name} start: $${debt.balance.toFixed(2)}, interest: $${interest.toFixed(2)}, due: $${due.toFixed(2)}, pay: $${payment.toFixed(2)}, end: $${newBalance.toFixed(2)}`);
+
+        debt.balance = newBalance;
+        monthBalances.push(newBalance);
+      }
+
+      schedule.push({
+        month,
+        balances: monthBalances.map(b => Math.max(b, 0))
+      });
+
+      mathLog.push(`Month ${month} completed. Remaining debts: ${sorted.map(d => d.balance.toFixed(2)).join(", ")}`);
+      mathLog.push("");
+    }
+
+    // Final summary
+    const remainingDebt = sorted.reduce((acc, d) => acc + d.balance, 0);
+    totalDebtEl.textContent = (remainingDebt > 0) ? remainingDebt.toFixed(2) : "0.00";
+    payoffTimeEl.textContent = (month < maxMonths) ? `${month} months` : `Over ${maxMonths} months`;
+    totalInterestEl.textContent = totalInterest.toFixed(2);
+    totalPaidEl.textContent = totalPaid.toFixed(2);
+
+    // Render amortization schedule table
+    const headerRow = `<tr><th>Month</th>${sorted.map(d => `<th>${d.name}</th>`).join("")}</tr>`;
+    const rows = schedule.map(s => `<tr><td>${s.month}</td>${s.balances.map(b => `<td>${b.toFixed(2)}</td>`).join("")}</tr>`).join("");
+    scheduleTable.innerHTML = headerRow + rows;
+
+    // Show math detail log
+    mathDetails.textContent = mathLog.join("
+");
+
+    results.classList.remove("hidden");
   };
 
-  // Initial render of debts
   renderDebts();
 });

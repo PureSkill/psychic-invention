@@ -75,3 +75,8 @@ pre {
   overflow-x: auto;
   line-height: 1.45;
 }
+
+.form-group input[type="number"] {
+  width: 120px;
+  margin-top: 5px;
+}
